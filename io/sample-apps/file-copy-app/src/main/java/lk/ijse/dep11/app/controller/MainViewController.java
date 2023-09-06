@@ -85,6 +85,8 @@ public class MainViewController {
                 fos.write(read);
                 copied++;
                 updateProgress(copied, sourceFile.length());
+                // For smooth UI rendering, let's give a break to our thread after each kilobyte
+                if (copied % 1024 == 0) Thread.sleep(25);
             }
 
             fos.close();
@@ -92,6 +94,9 @@ public class MainViewController {
 
             Platform.runLater(() -> new Alert(Alert.AlertType.INFORMATION, "Copied successfully").show());
         } catch (IOException e) {
+            Platform.runLater(() -> new Alert(Alert.AlertType.ERROR, "Failed to copy, try again!").show());
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             Platform.runLater(() -> new Alert(Alert.AlertType.ERROR, "Failed to copy, try again!").show());
             e.printStackTrace();
         }
