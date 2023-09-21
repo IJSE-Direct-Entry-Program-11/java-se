@@ -5,10 +5,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import lk.ijse.dep11.shared.to.Customer;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -37,8 +34,10 @@ public class ServerViewController {
                         ObjectInputStream ois = new ObjectInputStream(bis);
                         while (true) {
                             Customer customer = (Customer) ois.readObject();
-                            Platform.runLater(()-> tblCustomers.getItems().add(customer));
+                            Platform.runLater(() -> tblCustomers.getItems().add(customer));
                         }
+                    }catch (EOFException e){
+                        // Do nothing
                     }catch (IOException e){
                         e.printStackTrace();
                     } catch (ClassNotFoundException e) {
