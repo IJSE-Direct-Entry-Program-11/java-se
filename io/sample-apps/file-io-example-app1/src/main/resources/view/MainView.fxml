@@ -11,7 +11,7 @@
 <?import javafx.scene.text.Font?>
 
 
-<AnchorPane prefHeight="529.0" prefWidth="467.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lk.ijse.dep11.app1.controller.MainViewController">
+<AnchorPane fx:id="root" prefHeight="529.0" prefWidth="467.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lk.ijse.dep11.app1.controller.MainViewController">
    <children>
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#aeaeae2b" height="51.0" layoutX="-33.0" layoutY="-86.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="467.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
       <VBox layoutX="96.0" layoutY="14.0" spacing="5.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="60.0">
