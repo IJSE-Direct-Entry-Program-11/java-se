@@ -1,6 +1,8 @@
 package lk.ijse.dep11.app1.controller;
 
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -8,6 +10,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import lk.ijse.dep11.app1.tm.Employee;
 
+import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainViewController {
@@ -20,6 +24,8 @@ public class MainViewController {
     public TextField txtSearch;
     public Button btnNew;
     public AnchorPane root;
+
+    private ArrayList<Employee> employeeList = new ArrayList<>();
 
     public void initialize(){
         for (Control control : new Control[]{txtId, txtName, txtContact, btnSave, btnDelete}) {
@@ -50,10 +56,48 @@ public class MainViewController {
                 saveEmployeeList();
             });
         });
+
+        employeeList = readEmployeeList();
+        ObservableList<Employee> observableEmployeeList = FXCollections.observableList(employeeList);
+        tblEmployee.setItems(observableEmployeeList);
+    }
+
+    private ArrayList<Employee> readEmployeeList(){
+        File databaseFile = new File("employee.db");
+        if (!databaseFile.exists()) return new ArrayList<>();
+
+        try {
+            FileInputStream fis = new FileInputStream(databaseFile);
+            BufferedInputStream bis = new BufferedInputStream(fis);
+            ObjectInputStream ois = new ObjectInputStream(bis);
+            try {
+                return (ArrayList<Employee>) ois.readObject();
+            }finally {
+                ois.close();
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Failed to read employee database").show();
+            return new ArrayList<>();
+        }
     }
 
     private void saveEmployeeList(){
-
+        File databaseFile = new File("employee.db");
+        try {
+            databaseFile.createNewFile();
+            FileOutputStream fos = new FileOutputStream(databaseFile);
+            BufferedOutputStream bos = new BufferedOutputStream(fos);
+            ObjectOutputStream oos = new ObjectOutputStream(bos);
+            try {
+                oos.writeObject(employeeList);
+            }finally{
+                oos.close();
+            }
+        } catch (Throwable e) {
+            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Failed to save employee details").show();
+        }
     }
 
     public void btnSaveOnAction(ActionEvent actionEvent) {
@@ -87,7 +131,6 @@ public class MainViewController {
             tblEmployee.refresh();
             btnNew.fire();
         }
-
     }
 
     private List<Employee> getEmployeeList(){
