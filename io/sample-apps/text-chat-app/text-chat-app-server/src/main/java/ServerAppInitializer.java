@@ -6,38 +6,46 @@ import java.util.List;
 
 public class ServerAppInitializer {
 
-    private static List<Socket> clientList = new ArrayList<>();
+    private final static List<Socket> clientList = new ArrayList<>();
     private static String messages = "";
 
     public static void main(String[] args) throws IOException {
-        ServerSocket serverSocket = new ServerSocket(5050);
-        while (true){
-            System.out.println("Waiting for an incoming connection");
-            Socket localSocket = serverSocket.accept();
-            new Thread(()->{
-                clientList.add(localSocket);
-                try {
-                    InputStream is = localSocket.getInputStream();
-                    BufferedInputStream bis = new BufferedInputStream(is);
+        ServerSocket serverSocket = null;
+        try {
+            serverSocket = new ServerSocket(5050);
+            while (true) {
+                System.out.println("Waiting for an incoming connection");
+                Socket localSocket = serverSocket.accept();
 
-                    while (true) {
-                        byte[] buffer = new byte[1024];
-                        int read = bis.read(buffer);
-                        if (read == -1) throw new EOFException();
-                        messages += new String(buffer, 0, read);
-                        notifyClients();
+                new Thread(() -> {
+                    clientList.add(localSocket);
+
+                    try {
+                        InputStream is = localSocket.getInputStream();
+                        BufferedInputStream bis = new BufferedInputStream(is);
+
+                        while (true) {
+                            byte[] buffer = new byte[1024];
+                            int read = bis.read(buffer);
+                            if (read == -1) throw new EOFException();
+                            messages += new String(buffer, 0, read);
+                            notifyClients();
+                        }
+
+                    } catch (EOFException e) {
+                        clientList.remove(localSocket);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
                     }
-                }catch (EOFException e){
-                    clientList.remove(localSocket);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }).start();
+                }).start();
+            }
+        }finally {
+            if (serverSocket != null && !serverSocket.isClosed()) serverSocket.close();
         }
     }
 
     private static void notifyClients() {
-        new Thread(()->{
+        new Thread(() -> {
             for (Socket client : clientList) {
                 try {
                     OutputStream os = client.getOutputStream();
@@ -45,7 +53,8 @@ public class ServerAppInitializer {
                     bos.write(messages.getBytes());
                     bos.flush();
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    System.out.println("Failed to notify to the client: " + client);
+                    e.printStackTrace();
                 }
             }
         }).start();
