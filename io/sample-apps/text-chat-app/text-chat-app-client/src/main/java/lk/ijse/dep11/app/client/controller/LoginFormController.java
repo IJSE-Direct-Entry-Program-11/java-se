@@ -16,12 +16,17 @@ public class LoginFormController {
     public AnchorPane root;
 
     public void btnJoinOnAction(ActionEvent actionEvent) throws IOException {
-        Stage primaryStage = (Stage)root.getScene().getWindow();
+        if (txtName.getText().isBlank()) return;
+
+        Stage stage = new Stage();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/MainForm.fxml"));
         Scene mainScene = new Scene(fxmlLoader.load());
         MainFormController controller = fxmlLoader.getController();
         controller.initData(txtName.getText());
-        primaryStage.setScene(mainScene);
-        primaryStage.centerOnScreen();
+        stage.setScene(mainScene);
+        stage.setTitle("Text Chat App");
+        stage.show();
+        stage.centerOnScreen();
+        ((Stage)(root.getScene().getWindow())).close();
     }
 }

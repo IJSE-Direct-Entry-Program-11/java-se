@@ -8,6 +8,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
@@ -41,11 +42,23 @@ public class MainFormController {
 
     public void initData(String user){
         lblUser.setText(user);
+        try {
+            writeMessage("Entered: " + lblUser.getText() + "\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void btnSendOnAction(ActionEvent actionEvent) throws IOException {
-        if (!txtMessage.getText().isBlank())
-            remoteSocket.getOutputStream().write((lblUser.getText() + ": " + txtMessage.getText() + "\n").getBytes());
-            remoteSocket.getOutputStream().flush();
+        if (txtMessage.getText().isBlank()) return;
+        writeMessage(lblUser.getText() + ": " + txtMessage.getText() + "\n");
+        txtMessage.clear();
+        txtMessage.requestFocus();
+    }
+
+    private void writeMessage(String message) throws IOException {
+        BufferedOutputStream bos = new BufferedOutputStream(remoteSocket.getOutputStream());
+        bos.write(message.getBytes());
+        bos.flush();
     }
 }

@@ -21,6 +21,11 @@ public class ServerAppInitializer {
                     clientList.add(localSocket);
 
                     try {
+                        OutputStream os = localSocket.getOutputStream();
+                        BufferedOutputStream bos = new BufferedOutputStream(os);
+                        bos.write(messages.getBytes());
+                        bos.flush();
+
                         InputStream is = localSocket.getInputStream();
                         BufferedInputStream bis = new BufferedInputStream(is);
 
