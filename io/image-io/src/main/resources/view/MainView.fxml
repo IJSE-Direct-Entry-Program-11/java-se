@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="root" prefHeight="466.0" prefWidth="350.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lk.ijse.dep11.app.controller.MainViewController">
+   <children>
+      <Label alignment="CENTER" layoutX="194.0" layoutY="57.0" text="Image IO" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+         <font>
+            <Font name="Ubuntu Bold" size="21.0" />
+         </font>
+      </Label>
+      <FlowPane alignment="CENTER" layoutX="14.0" layoutY="50.0" prefHeight="273.0" prefWidth="330.0" style="-fx-border-color: lightgray;" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+         <children>
+            <ImageView fx:id="imvDisplay" fitHeight="242.0" fitWidth="324.0" pickOnBounds="true" preserveRatio="true" />
+         </children>
+      </FlowPane>
+      <FlowPane alignment="CENTER" layoutX="79.0" layoutY="340.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+         <children>
+            <HBox spacing="10.0">
+               <children>
+                  <Button fx:id="btnOpen" mnemonicParsing="false" onAction="#btnOpenOnAction" prefHeight="29.0" prefWidth="95.0" style="-fx-background-color: skyblue;" text="OPEN">
+                     <font>
+                        <Font name="Ubuntu" size="16.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="btnSave" mnemonicParsing="false" onAction="#btnSaveOnAction" prefHeight="29.0" prefWidth="95.0" style="-fx-background-color: green; -fx-text-fill: white;" text="SAVE">
+                     <font>
+                        <Font name="Ubuntu" size="16.0" />
+                     </font>
+                  </Button>
+               </children>
+            </HBox>
+         </children>
+      </FlowPane>
+      <VBox alignment="CENTER" layoutX="14.0" layoutY="384.0" spacing="5.0">
+         <children>
+            <TextField fx:id="txtURL" alignment="CENTER" prefHeight="24.0" prefWidth="330.0" promptText="Eg. https://google.lk/abc.jpeg">
+               <font>
+                  <Font name="Ubuntu" size="16.0" />
+               </font>
+            </TextField>
+            <Button fx:id="btnLoadImage" defaultButton="true" mnemonicParsing="false" onAction="#btnLoadImageOnAction" text="LOAD IMAGE">
+               <font>
+                  <Font name="Ubuntu" size="16.0" />
+               </font>
+            </Button>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>
