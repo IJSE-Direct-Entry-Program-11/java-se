@@ -23,11 +23,11 @@ public class Demo2 {
                 System.out.printf("capacity=%s, pos=%s, limit=%s \n",
                     buffer.capacity(), buffer.position(), buffer.limit());
                 System.out.println(Charset.defaultCharset().decode(buffer));
-                // System.out.printf("capacity=%s, pos=%s, limit=%s \n",
-                //     buffer.capacity(), buffer.position(), buffer.limit());
+                 System.out.printf("capacity=%s, pos=%s, limit=%s \n",
+                     buffer.capacity(), buffer.position(), buffer.limit());
                 buffer.clear();
-                // System.out.printf("capacity=%s, pos=%s, limit=%s \n",
-                //     buffer.capacity(), buffer.position(), buffer.limit());
+                 System.out.printf("capacity=%s, pos=%s, limit=%s \n",
+                     buffer.capacity(), buffer.position(), buffer.limit());
             }
         }
 
