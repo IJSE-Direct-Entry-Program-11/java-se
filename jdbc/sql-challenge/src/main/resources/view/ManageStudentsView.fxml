@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane prefHeight="608.0" prefWidth="1036.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lk.ijse.dep11.sqlgame.controller.ManageStudentsViewController">
+   <children>
+      <HBox layoutX="10.0" layoutY="10.0" spacing="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+         <children>
+            <Label maxWidth="1.7976931348623157E308" text="Manage Students" HBox.hgrow="ALWAYS">
+               <font>
+                  <Font name="Ubuntu Bold" size="20.0" />
+               </font>
+            </Label>
+            <Button fx:id="btnNewStudent" mnemonicParsing="false" onAction="#btnNewStudentOnAction" text="+ NEW STUDENT" />
+            <Button fx:id="btnLoadStudentsFromCsv" mnemonicParsing="false" onAction="#btnLoadStudentsFromCsvOnAction" text="LOAD STUDENTS FROM CSV" />
+         </children>
+      </HBox>
+      <VBox layoutX="14.0" layoutY="27.0" spacing="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="45.0">
+         <children>
+            <Label text="STUDENT ID">
+               <font>
+                  <Font name="Ubuntu" size="14.0" />
+               </font>
+            </Label>
+            <TextField fx:id="txtStudentId" promptText="Eg. 2303111001">
+               <font>
+                  <Font name="Ubuntu" size="14.0" />
+               </font>
+            </TextField>
+            <Label text="STUDENT NAME">
+               <font>
+                  <Font name="Ubuntu" size="14.0" />
+               </font>
+            </Label>
+            <TextField fx:id="txtStudentName" promptText="Eg. Kasun Sampath">
+               <font>
+                  <Font name="Ubuntu" size="14.0" />
+               </font>
+            </TextField>
+            <Label text="STUDENT CARD">
+               <font>
+                  <Font name="Ubuntu" size="14.0" />
+               </font>
+            </Label>
+            <TextField fx:id="txtStudentCard" promptText="Eg. Katu Sira">
+               <font>
+                  <Font name="Ubuntu" size="14.0" />
+               </font>
+            </TextField>
+            <HBox spacing="10.0">
+               <children>
+                  <Button fx:id="btnSave" defaultButton="true" mnemonicParsing="false" onAction="#btnSaveOnAction" prefHeight="24.0" prefWidth="80.0" text="SAVE">
+                     <font>
+                        <Font name="Ubuntu" size="14.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="btnDelete" mnemonicParsing="false" onAction="#btnDeleteOnAction" prefHeight="24.0" prefWidth="80.0" text="DELETE">
+                     <font>
+                        <Font name="Ubuntu" size="14.0" />
+                     </font>
+                  </Button>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+      <TableView fx:id="tblStudents" layoutX="14.0" layoutY="228.0" prefHeight="328.0" prefWidth="1016.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="270.0">
+        <columns>
+          <TableColumn prefWidth="135.0" text="STUDENT ID" />
+          <TableColumn prefWidth="493.0" text="NAME" />
+            <TableColumn prefWidth="181.0" text="CARD" />
+            <TableColumn prefWidth="175.0" text="CHALLENGE STATUS" />
+        </columns>
+      </TableView>
+   </children>
+</AnchorPane>
