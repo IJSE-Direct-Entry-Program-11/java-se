@@ -5,6 +5,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.MouseDragEvent;
+import javafx.scene.input.TransferMode;
 import lk.ijse.dep11.sqlgame.controller.tm.Student;
 import lk.ijse.dep11.sqlgame.db.DbConnection;
 
@@ -44,7 +47,7 @@ public class ManageStudentsViewController {
     }
 
     public void btnNewStudentOnAction(ActionEvent actionEvent) {
-        for(var txt : new TextField[]{txtStudentId, txtStudentName, txtStudentCard}) txt.clear();
+        for (var txt : new TextField[]{txtStudentId, txtStudentName, txtStudentCard}) txt.clear();
         tblStudents.getSelectionModel().clearSelection();
         txtStudentId.requestFocus();
     }
@@ -58,13 +61,13 @@ public class ManageStudentsViewController {
     public void btnDeleteOnAction(ActionEvent actionEvent) {
     }
 
-    public boolean addNewStudent(String id, String name, String card){
+    public boolean addNewStudent(String id, String name, String card) {
         try {
             Connection connection = DbConnection.getInstance().getConnection();
             Statement stmQuery = connection.createStatement();
             String sql = String.format("SELECT id FROM student WHERE id='%s'", id);
             ResultSet rst = stmQuery.executeQuery(sql);
-            if (rst.next()){
+            if (rst.next()) {
                 return false;
             }
 
@@ -72,9 +75,9 @@ public class ManageStudentsViewController {
             sql = String.format("INSERT INTO student (id, name, card) VALUES ('%s','%s','%s')",
                     id, name, card);
             int affectedRows = stmInsert.executeUpdate(sql);
-            if (affectedRows == 1){
+            if (affectedRows == 1) {
                 return true;
-            }else{
+            } else {
                 throw new RuntimeException("Something went wrong badly");
             }
         } catch (SQLException e) {
@@ -82,7 +85,7 @@ public class ManageStudentsViewController {
         }
     }
 
-    public boolean deleteStudent(String id){
+    public boolean deleteStudent(String id) {
         Connection connection = DbConnection.getInstance().getConnection();
         try {
             Statement stmDelete = connection.createStatement();
@@ -94,7 +97,7 @@ public class ManageStudentsViewController {
         }
     }
 
-    public boolean isValidDepStudentId(String id){
+    public boolean isValidDepStudentId(String id) {
         if (!id.matches("\\d{2}03\\d{2}1\\d{3}")) return false;
 
         int year = Integer.parseInt(id.substring(0, 2));
