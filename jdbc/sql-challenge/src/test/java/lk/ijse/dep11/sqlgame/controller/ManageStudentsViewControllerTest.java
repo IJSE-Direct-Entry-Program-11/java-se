@@ -36,18 +36,17 @@ class ManageStudentsViewControllerTest {
     class DbRelatedTest{
         @BeforeEach
         void setUp() throws SQLException {
-            System.out.println("Setup");
             DbConnection.getInstance().getConnection().setAutoCommit(false);
         }
 
         @AfterEach
         void tearDown() throws SQLException {
-            System.out.println("Tear Down");
             DbConnection.getInstance().getConnection().rollback();
             DbConnection.getInstance().getConnection().setAutoCommit(true);
         }
 
         @CsvSource({"2303101001,Kasun Sampath,kasuna,true",
+//                "2303101001,Nuwan Ramindu,nuwana,false",
                 "2303101002,Supun Malinda,maliya,true"})
         @ParameterizedTest
         void addNewStudent(String id, String name, String card, boolean expectedResult) {
@@ -55,6 +54,16 @@ class ManageStudentsViewControllerTest {
                 boolean result = controller.addNewStudent(id, name, card);
                 assertEquals(expectedResult, result);
             });
+        }
+
+        @Test
+        void deleteStudent(){
+            addNewStudent("2303101001","Kasun Sampath","kasuna", true);
+            boolean result = controller.deleteStudent("2303101001");
+            assertTrue(result);
+
+            result = controller.deleteStudent("ajfdklskj");
+            assertFalse(result);
         }
     }
 
