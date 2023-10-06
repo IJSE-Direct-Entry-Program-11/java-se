@@ -6,9 +6,12 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.TransferMode;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.FileChooser;
 import lk.ijse.dep11.sqlgame.controller.tm.Student;
 import lk.ijse.dep11.sqlgame.db.DbConnection;
 
+import java.io.*;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,6 +19,7 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 public class ManageStudentsViewController {
     public Button btnNewStudent;
@@ -26,6 +30,7 @@ public class ManageStudentsViewController {
     public Button btnSave;
     public Button btnDelete;
     public TableView<Student> tblStudents;
+    public AnchorPane root;
 
     public void initialize() {
         tblStudents.getColumns().get(0).setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -74,6 +79,61 @@ public class ManageStudentsViewController {
     }
 
     public void btnLoadStudentsFromCsvOnAction(ActionEvent actionEvent) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Import Student Database");
+        fileChooser.getExtensionFilters().add(new FileChooser
+                .ExtensionFilter("CSV Files (*.csv)", "*.csv"));
+        File file = fileChooser.showOpenDialog(root.getScene().getWindow());
+        if (file == null) return;
+        importStudentFromCsvFile(file);
+    }
+
+    private void importStudentFromCsvFile(File file){
+        try(FileReader fr = new FileReader(file);
+            BufferedReader br = new BufferedReader(fr)) {
+            String firstLine = br.readLine();
+
+            int idField = -1;
+            int nameField = -1;
+            int cardFiled = -1;
+
+            String[] fields = firstLine.split(",");
+            for (int i = 0; i < fields.length; i++) {
+                String field = fields[i];
+                if (field.equalsIgnoreCase("id")) idField = i;
+                if (field.equalsIgnoreCase("name")) nameField = i;
+                if (field.equalsIgnoreCase("card") ||
+                        field.equalsIgnoreCase("nick name")) cardFiled = i;
+            }
+
+            if (idField == -1 || nameField == -1) return;
+
+            String line;
+            int imported = 0;
+            while ((line = br.readLine()) != null){
+                try {
+                    fields = line.split(",");
+                    String id = fields[idField];
+                    String name = fields[nameField];
+                    String card = null;
+                    if (cardFiled != -1 && (cardFiled < fields.length )) card = fields[cardFiled];
+                    try {
+                        boolean result = addNewStudent(id, name, card);
+                        if (result) {
+                            tblStudents.getItems()
+                                    .add(new Student(id, name, card, "YET TO FACE"));
+                            imported++;
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }catch (ArrayIndexOutOfBoundsException e){}
+            }
+
+            if (imported > 0) new Alert(Alert.AlertType.INFORMATION, "Imported: " + imported).show();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void btnSaveOnAction(ActionEvent actionEvent) {
@@ -186,5 +246,17 @@ public class ManageStudentsViewController {
 
         int studentNumber = Integer.parseInt(id.substring(id.length() - 3));
         return (studentNumber > 0 && studentNumber < 80);
+    }
+
+    public void rootOnDragDropped(DragEvent dragEvent) {
+            if (!dragEvent.getDragboard().getFiles().isEmpty()){
+                File file = dragEvent.getDragboard().getFiles().get(0);
+                if (!file.getAbsolutePath().endsWith("csv")) return;
+                importStudentFromCsvFile(file);
+            }
+    }
+
+    public void rootOnDragOver(DragEvent dragEvent) {
+        dragEvent.acceptTransferModes(TransferMode.ANY);
     }
 }

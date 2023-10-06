@@ -10,8 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane prefHeight="608.0" prefWidth="1036.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lk.ijse.dep11.sqlgame.controller.ManageStudentsViewController">
+<AnchorPane fx:id="root" onDragDropped="#rootOnDragDropped" onDragOver="#rootOnDragOver" prefHeight="608.0" prefWidth="1036.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lk.ijse.dep11.sqlgame.controller.ManageStudentsViewController">
    <children>
       <HBox layoutX="10.0" layoutY="10.0" spacing="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
          <children>
