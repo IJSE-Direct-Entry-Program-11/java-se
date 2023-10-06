@@ -1,9 +1,7 @@
 package lk.ijse.dep11.sqlgame.controller;
 
 import javafx.event.ActionEvent;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.MouseDragEvent;
@@ -17,6 +15,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 public class ManageStudentsViewController {
     public Button btnNewStudent;
@@ -38,12 +37,34 @@ public class ManageStudentsViewController {
 
         tblStudents.getSelectionModel().selectedItemProperty().addListener((ov, prev, cur) -> {
             btnDelete.setDisable(cur == null);
+            btnSave.setDisable(cur != null);
+
             if (cur != null) {
                 txtStudentId.setText(cur.getId());
                 txtStudentName.setText(cur.getName());
                 txtStudentCard.setText(cur.getCard());
             }
         });
+
+        loadAllStudents();
+    }
+
+    private void loadAllStudents(){
+        Connection connection = DbConnection.getInstance().getConnection();
+        try {
+            Statement stm = connection.createStatement();
+            ResultSet rst = stm.executeQuery("SELECT * FROM student");
+            while (rst.next()){
+                String id = rst.getString("id");
+                String name = rst.getString("name");
+                String card = rst.getString("card");
+                card = card.equalsIgnoreCase("null") ? "" : card;
+                String status = rst.getBoolean("status") ? "FACED" : "YET TO FACE";
+                tblStudents.getItems().add(new Student(id, name, card, status));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void btnNewStudentOnAction(ActionEvent actionEvent) {
@@ -56,9 +77,64 @@ public class ManageStudentsViewController {
     }
 
     public void btnSaveOnAction(ActionEvent actionEvent) {
+        if (!isDataValid()) return;
+
+        String id = txtStudentId.getText().strip();
+        String name = txtStudentName.getText().strip();
+        String card = txtStudentCard.getText().strip();
+
+        try {
+            boolean result = addNewStudent(id, name, card.isBlank() ? null : card);
+            if (!result){
+                new Alert(Alert.AlertType.ERROR, "Student ID already exists").show();
+                txtStudentId.requestFocus();
+                txtStudentId.selectAll();
+            }else{
+                tblStudents.getItems().add(new Student(id, name, card, "YET TO FACE"));
+                new Alert(Alert.AlertType.INFORMATION, "Saved").show();
+                btnNewStudent.fire();
+            }
+        }catch (Exception e){
+            new Alert(Alert.AlertType.ERROR, "Failed to save the student").show();
+            e.printStackTrace();
+        }
     }
 
     public void btnDeleteOnAction(ActionEvent actionEvent) {
+        Optional<ButtonType> optButton = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure to delete the student?",
+                ButtonType.YES, ButtonType.NO).showAndWait();
+        if (optButton.get() == ButtonType.YES){
+            Student selectedStudent = tblStudents.getSelectionModel().getSelectedItem();
+            try {
+                deleteStudent(selectedStudent.getId());
+                tblStudents.getItems().remove(selectedStudent);
+                btnNewStudent.fire();
+            }catch (Exception e){
+                new Alert(Alert.AlertType.ERROR, "Failed to delete the student").show();
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private boolean isDataValid(){
+        String id = txtStudentId.getText().strip();
+        String name = txtStudentName.getText().strip();
+        String card = txtStudentCard.getText().strip();
+
+        if (!isValidDepStudentId(id)){
+            txtStudentId.requestFocus();
+            txtStudentId.selectAll();
+            return false;
+        }else if (!name.matches("[A-Za-z ]{2,}")){
+            txtStudentName.requestFocus();
+            txtStudentName.selectAll();
+            return false;
+        }else if (!card.isBlank() && !card.matches("[A-Za-z ]{2,}")){
+            txtStudentCard.requestFocus();
+            txtStudentCard.selectAll();
+            return false;
+        }
+        return true;
     }
 
     public boolean addNewStudent(String id, String name, String card) {
