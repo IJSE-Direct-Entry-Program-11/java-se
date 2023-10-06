@@ -23,7 +23,7 @@ public class AppInitializer extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         primaryStage.setScene(new Scene(FXMLLoader.load(getClass()
-                .getResource("/view/ManageStudentsView.fxml"))));
+                .getResource("/view/HomeView.fxml"))));
         primaryStage.setTitle("SQL Challenge");
         primaryStage.setResizable(false);
         primaryStage.show();
